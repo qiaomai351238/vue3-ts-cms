@@ -11,14 +11,14 @@ const qmRequest = new QMRequest({
       if (token && config.headers) {
         config.headers.Authorization = `Bearer ${token}`
       }
-      console.log('单个实例请求成功')
+      // console.log('单个实例请求成功')
       return config
     },
     requestInterceptorCatch: (err) => {
       return err
     },
     responseInterceptor: (res) => {
-      console.log('单个实例响应成功')
+      // console.log('单个实例响应成功')
       return res
     },
     responseInterceptorCatch: (err) => {

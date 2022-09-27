@@ -2,25 +2,37 @@ import { App } from 'vue'
 import 'element-plus/dist/index.css'
 import {
   ElButton,
-  ElAside,
-  ElAlert,
   ElForm,
   ElFormItem,
   ElInput,
-  ElRadio
+  ElRadio,
+  ElTabs,
+  ElTabPane,
+  ElIcon,
+  ElLink,
+  ElCheckbox
 } from 'element-plus'
 
 const components = [
   ElButton,
-  ElAside,
-  ElAlert,
   ElForm,
   ElFormItem,
   ElInput,
-  ElRadio
+  ElRadio,
+  ElTabs,
+  ElTabPane,
+  ElIcon,
+  ElLink,
+  ElCheckbox
 ]
+
+import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 export default function (app: App) {
   for (const component of components) {
     app.component(component.name, component)
+  }
+
+  for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
+    app.component(key, component)
   }
 }

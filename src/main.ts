@@ -26,7 +26,7 @@ interface DataType {
 }
 
 qmRequest
-  .post<DataType>({
+  .get<DataType>({
     url: '/home/multidata',
     showLoading: false
     // headers: {},
