@@ -1,8 +1,8 @@
 <template>
   <div class="login-panel">
     <h1 class="title">后台管理系统</h1>
-    <el-tabs type="border-card" class="demo-tabs" stretch>
-      <el-tab-pane>
+    <el-tabs v-model="currentTab" type="border-card" class="demo-tabs" stretch>
+      <el-tab-pane name="account">
         <template #label>
           <span class="custom-tabs-label">
             <el-icon><UserFilled /></el-icon>
@@ -11,14 +11,14 @@
         </template>
         <login-account ref="accountRef" />
       </el-tab-pane>
-      <el-tab-pane>
+      <el-tab-pane name="phone">
         <template #label>
           <span class="custom-tabs-label">
             <el-icon><Iphone /></el-icon>
             <span>手机登录</span>
           </span>
         </template>
-        <login-phone />
+        <login-phone ref="phoneRef" />
       </el-tab-pane>
     </el-tabs>
 
@@ -37,6 +37,7 @@
 import { defineComponent, ref } from 'vue'
 import LoginAccount from './login-account.vue'
 import LoginPhone from './login-phone.vue'
+import LocalCache from '@/utils/cache'
 
 export default defineComponent({
   components: {
@@ -44,16 +45,20 @@ export default defineComponent({
     LoginPhone
   },
   setup() {
-    const isKeepPassword = ref(false)
-
+    const isKeepPassword = ref<boolean>(!!LocalCache.getCache('password'))
     const accountRef = ref<InstanceType<typeof LoginAccount>>()
+    const phoneRef = ref<InstanceType<typeof LoginPhone>>()
+    const currentTab = ref<string>('account')
 
     const handleLogin = () => {
-      console.log('立即登录', accountRef.value)
-      accountRef.value?.loginAction()
+      if (currentTab.value === 'account') {
+        accountRef.value?.loginAction(isKeepPassword.value)
+      } else {
+        console.log('phoneRef调用')
+      }
     }
 
-    return { isKeepPassword, accountRef, handleLogin }
+    return { isKeepPassword, accountRef, currentTab, phoneRef, handleLogin }
   }
 })
 </script>

@@ -10,12 +10,6 @@
           <el-button type="primary" class="get-btn">获取验证码</el-button>
         </div>
       </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="submitForm(ruleFormRef)"
-          >Submit</el-button
-        >
-        <el-button @click="resetForm(ruleFormRef)">Reset</el-button>
-      </el-form-item>
     </el-form>
   </div>
 </template>
@@ -44,7 +38,6 @@ export default defineComponent({
   .get-code {
     display: flex;
   }
-
   .get-btn {
     margin-left: 8px;
   }
