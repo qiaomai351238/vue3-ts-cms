@@ -47,7 +47,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watch } from 'vue'
+import { defineComponent, computed } from 'vue'
 import { useStore } from '@/store'
 import { useRouter, useRoute } from 'vue-router'
 import { pathMapToMenu } from '@/utils/map-menus'

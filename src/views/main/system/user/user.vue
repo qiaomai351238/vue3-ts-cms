@@ -2,13 +2,26 @@
   <div class="user">
     <page-search :searchFormConfig="searchFormConfig" />
     <div class="content">
-      <qm-table :propList="propList" :listData="userList">
+      <qm-table
+        :propList="propList"
+        :listData="userList"
+        showIndexColumn
+        showSelectColumn
+      >
         <template #status="scope">
           <el-button>{{ scope.row.enable ? '启用' : '禁用' }}</el-button>
         </template>
         <template #createAt="scope">
-          {{ scope.row.createAt }}
-          <!-- <strong>哈哈哈</strong> -->
+          {{ $filters.formatTime(scope.row.createAt) }}
+        </template>
+        <template #updateAt="scope">
+          {{ $filters.formatTime(scope.row.updateAt) }}
+        </template>
+        <template #handler>
+          <div class="handle-bnts">
+            <el-link type="primary" icon="EditPen">编辑</el-link>
+            <el-button text type="primary" icon="EditPen">删除</el-button>
+          </div>
         </template>
       </qm-table>
     </div>
@@ -53,6 +66,11 @@ export default defineComponent({
         label: '更新时间',
         minWidth: '250',
         slotName: 'updateAt'
+      },
+      {
+        label: '操作',
+        minWidth: '120',
+        slotName: 'handler'
       }
     ]
 
