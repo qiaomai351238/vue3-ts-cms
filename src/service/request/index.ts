@@ -57,7 +57,7 @@ class QMRequest {
     )
   }
 
-  request<T>(config: QMRequestConfig<T>): Promise<T> {
+  request<T = any>(config: QMRequestConfig<T>): Promise<T> {
     return new Promise((resolve, reject) => {
       if (config.interceptors?.requestInterceptor) {
         config = config.interceptors.requestInterceptor(config)
@@ -85,19 +85,19 @@ class QMRequest {
     })
   }
 
-  get<T>(config: QMRequestConfig<T>): Promise<T> {
+  get<T = any>(config: QMRequestConfig<T>): Promise<T> {
     return this.request<T>({ ...config, method: 'GET' })
   }
 
-  post<T>(config: QMRequestConfig<T>): Promise<T> {
+  post<T = any>(config: QMRequestConfig<T>): Promise<T> {
     return this.request<T>({ ...config, method: 'POST' })
   }
 
-  delete<T>(config: QMRequestConfig<T>): Promise<T> {
+  delete<T = any>(config: QMRequestConfig<T>): Promise<T> {
     return this.request<T>({ ...config, method: 'DELETE' })
   }
 
-  patch<T>(config: QMRequestConfig<T>): Promise<T> {
+  patch<T = any>(config: QMRequestConfig<T>): Promise<T> {
     return this.request<T>({ ...config, method: 'PATCH' })
   }
 }

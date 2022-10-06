@@ -1,5 +1,6 @@
 import qmRequest from '../index'
-import type { IAccount, IDataType, ILoginResult } from './type'
+import type { IAccount, ILoginResult } from './type'
+import { IDataType } from '../types'
 
 enum loginAPI {
   AccountLogin = '/login',
