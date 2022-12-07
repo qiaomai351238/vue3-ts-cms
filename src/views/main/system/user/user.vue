@@ -1,87 +1,74 @@
 <template>
   <div class="user">
-    <page-search :searchFormConfig="searchFormConfig" />
-    <div class="content">
-      <qm-table
-        :propList="propList"
-        :listData="userList"
-        showIndexColumn
-        showSelectColumn
-      >
-        <template #status="scope">
-          <el-button>{{ scope.row.enable ? '启用' : '禁用' }}</el-button>
-        </template>
-        <template #createAt="scope">
-          {{ $filters.formatTime(scope.row.createAt) }}
-        </template>
-        <template #updateAt="scope">
-          {{ $filters.formatTime(scope.row.updateAt) }}
-        </template>
-        <template #handler>
-          <div class="handle-bnts">
-            <el-link type="primary" icon="EditPen">编辑</el-link>
-            <el-button text type="primary" icon="EditPen">删除</el-button>
-          </div>
-        </template>
-      </qm-table>
-    </div>
+    <page-search
+      :searchFormConfig="searchFormConfig"
+      @resetBtnClick="handleResetClick"
+      @queryBtnClick="handleQueryClick"
+    />
+    <page-content
+      ref="pageContentRef"
+      pageName="users"
+      :contentTableConfig="contentTableConfig"
+      @newBtnClick="handleNewData"
+      @editBtnClick="handleEditData"
+    />
+    <page-modal
+      ref="pageModalRef"
+      :defaultInfo="defaultValue"
+      :modalConfig="modalConfig"
+    />
   </div>
 </template>
 
 <script lang="ts">
+import { defineComponent } from 'vue'
+
 import PageSearch from '@/components/page-search'
-import { defineComponent, computed } from 'vue'
+import PageContent from '@/components/page-content'
+import PageModal from '@/components/page-modal'
+
 import { searchFormConfig } from './config/search.config'
-import { useStore } from '@/store'
-import QmTable from '@/base-ui/table'
+import { contentTableConfig } from './config/content.config'
+import { modalConfig } from './config/modal.config'
+
+import { usePageSearch } from '@/hooks/use-page-search'
+import { usePageModal } from '@/hooks/use-page-modal'
 
 export default defineComponent({
   name: 'user',
-  components: { PageSearch, QmTable },
+  components: { PageSearch, PageContent, PageModal },
   setup() {
-    const store = useStore()
-    store.dispatch('system/getPageListAction', {
-      pageUrl: '/users/list',
-      queryInfo: {
-        offset: 0,
-        size: 10
-      }
-    })
-    const userList = computed(() => store.state.system.userList)
-    // const userCount = computed(() => store.state.system.userCount)
+    const [pageContentRef, handleResetClick, handleQueryClick] = usePageSearch()
 
-    const propList = [
-      { prop: 'name', label: '用户名', minWidth: '100' },
-      { prop: 'realname', label: '真实姓名', minWidth: '100' },
-      { prop: 'cellphone', label: '手机号码', minWidth: '100' },
-      { prop: 'enable', label: '状态', minWidth: '100', slotName: 'status' },
-      {
-        prop: 'createAt',
-        label: '创建时间',
-        minWidth: '250',
-        slotName: 'createAt'
-      },
-      {
-        prop: 'updateAt',
-        label: '更新时间',
-        minWidth: '250',
-        slotName: 'updateAt'
-      },
-      {
-        label: '操作',
-        minWidth: '120',
-        slotName: 'handler'
-      }
-    ]
+    const newCallback = () => {
+      const passwordItem = modalConfig.formItems.find(
+        (item) => item.field === 'password'
+      )
+      passwordItem!.isHidden = false
+    }
+    const editCallback = () => {
+      const passwordItem = modalConfig.formItems.find(
+        (item) => item.field === 'password'
+      )
+      passwordItem!.isHidden = true
+    }
+    const [pageModalRef, defaultValue, handleNewData, handleEditData] =
+      usePageModal(newCallback, editCallback)
 
-    return { userList, propList, searchFormConfig }
+    return {
+      pageContentRef,
+      searchFormConfig,
+      contentTableConfig,
+      handleResetClick,
+      handleQueryClick,
+      modalConfig,
+      pageModalRef,
+      defaultValue,
+      handleNewData,
+      handleEditData
+    }
   }
 })
 </script>
 
-<style scoped>
-.content {
-  padding: 20px;
-  border-top: 20px solid #f0f2f5;
-}
-</style>
+<style scoped></style>

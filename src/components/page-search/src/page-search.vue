@@ -6,8 +6,8 @@
       </template>
       <template #footer>
         <div class="handle-btns">
-          <el-button>重置</el-button>
-          <el-button type="primary">搜索</el-button>
+          <el-button @click="handleReset">重置</el-button>
+          <el-button type="primary" @click="handleQueryClick">搜索</el-button>
         </div>
       </template>
     </qm-form>
@@ -26,15 +26,28 @@ export default defineComponent({
     }
   },
   components: { QmForm },
-  setup() {
-    const formData = ref({
-      id: '',
-      name: '',
-      password: '',
-      sport: '',
-      createTime: ''
-    })
-    return { formData }
+  emit: ['resetBtnClick', 'queryBtnClick'],
+  setup(props, { emit }) {
+    const formItems = props.searchFormConfig?.formItems ?? []
+    const formOriginData: any = {}
+    for (const item of formItems) {
+      formOriginData[item.field] = ''
+    }
+    const formData = ref(formOriginData)
+
+    const handleReset = () => {
+      // for (const key in formOriginData) {
+      //   formData.value[key] = formOriginData[key]
+      // }
+      formData.value = formOriginData
+      emit('resetBtnClick')
+    }
+
+    const handleQueryClick = () => {
+      console.log('点击了搜索')
+      emit('queryBtnClick', formData.value)
+    }
+    return { formData, handleReset, handleQueryClick }
   }
 })
 </script>

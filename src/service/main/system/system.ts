@@ -2,9 +2,15 @@ import qmRequest from '@/service'
 
 import { IDataType } from '@/service/types'
 
-export function getPageListAction(url: string, queryInfo: any) {
+export function getPageListData(url: string, queryInfo: any) {
   return qmRequest.post<IDataType>({
     url,
     data: queryInfo
+  })
+}
+
+export function deletePageData(url: string) {
+  return qmRequest.delete<IDataType>({
+    url
   })
 }

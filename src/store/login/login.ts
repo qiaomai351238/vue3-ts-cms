@@ -13,7 +13,7 @@ import { ILoginState } from './type'
 import { IRootState } from '../type'
 import type { IAccount } from '@/service/login/type'
 
-import { mapMenusToRoutes } from '@/utils/map-menus'
+import { mapMenusToRoutes, mapMenusToPermissions } from '@/utils/map-menus'
 
 const loginModule: Module<ILoginState, IRootState> = {
   namespaced: true,
@@ -21,7 +21,8 @@ const loginModule: Module<ILoginState, IRootState> = {
     return {
       token: '',
       userInfo: {},
-      userMenus: []
+      userMenus: [],
+      permissions: []
     }
   },
   mutations: {
@@ -34,10 +35,12 @@ const loginModule: Module<ILoginState, IRootState> = {
     changeUserMenus(state, userMnus: any) {
       state.userMenus = userMnus
       const routes = mapMenusToRoutes(userMnus)
-      console.log(routes)
       routes.forEach((route) => {
         router.addRoute('main', route)
       })
+
+      const permissions = mapMenusToPermissions(userMnus)
+      state.permissions = permissions
     }
   },
   getters: {},
