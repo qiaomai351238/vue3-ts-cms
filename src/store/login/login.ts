@@ -45,11 +45,13 @@ const loginModule: Module<ILoginState, IRootState> = {
   },
   getters: {},
   actions: {
-    async accountLoginAction({ commit }, payload: IAccount) {
+    async accountLoginAction({ commit, dispatch }, payload: IAccount) {
       const loginResult = await accountLoginRequest(payload)
       const { id, token } = loginResult.data
       commit('changeToken', token)
       localCache.setCache('token', token)
+
+      dispatch('getInitialAction', null, { root: true })
 
       const userInfoResult = await requestUserInfoById(id)
       const userInfo = userInfoResult.data
@@ -63,10 +65,11 @@ const loginModule: Module<ILoginState, IRootState> = {
 
       router.push('/')
     },
-    loadLocalLogin({ commit }) {
+    loadLocalLogin({ commit, dispatch }) {
       const token = localCache.getCache('token')
       if (token) {
         commit('changeToken', token)
+        dispatch('getInitialAction', null, { root: true })
       }
       const userInfo = localCache.getCache('userInfo')
       if (userInfo) {

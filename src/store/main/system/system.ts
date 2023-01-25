@@ -1,7 +1,12 @@
 import { Module } from 'vuex'
 import { ISystemState } from './types'
 import { IRootState } from '@/store/type'
-import { deletePageData, getPageListData } from '@/service/main/system/system'
+import {
+  createPageData,
+  deletePageData,
+  editPageData,
+  getPageListData
+} from '@/service/main/system/system'
 
 const systemModule: Module<ISystemState, IRootState> = {
   namespaced: true,
@@ -58,7 +63,6 @@ const systemModule: Module<ISystemState, IRootState> = {
   actions: {
     async getPageListAction({ commit }, payload: any) {
       const pageName = payload.pageName
-      console.log(pageName)
       const pageUrl = `${pageName}/list`
       const keyName = getName(pageName)
       const res = await getPageListData(pageUrl, payload.queryInfo)
@@ -72,7 +76,35 @@ const systemModule: Module<ISystemState, IRootState> = {
       const pageUrl = `/${pageName}/${id}`
       await deletePageData(pageUrl)
       dispatch('getPageListAction', {
-        pageUrl,
+        pageName,
+        queryInfo: {
+          offset: 0,
+          size: 10
+        }
+      })
+    },
+
+    async createPageDataAction({ dispatch }, payload: any) {
+      const { pageName, newData } = payload
+      const pageUrl = `/${pageName}`
+      await createPageData(pageUrl, newData)
+
+      dispatch('getPageListAction', {
+        pageName,
+        queryInfo: {
+          offset: 0,
+          size: 10
+        }
+      })
+    },
+
+    async editPageDataAction({ dispatch }, payload: any) {
+      const { pageName, editData, id } = payload
+      const pageUrl = `/${pageName}/${id}`
+      await editPageData(pageUrl, editData)
+
+      dispatch('getPageListAction', {
+        pageName,
         queryInfo: {
           offset: 0,
           size: 10
@@ -83,6 +115,7 @@ const systemModule: Module<ISystemState, IRootState> = {
 }
 
 function getName(key: string) {
+  console.log('key', key)
   return key.slice(0, 1).toUpperCase() + key.slice(1)
 }
 

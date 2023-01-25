@@ -11,7 +11,7 @@
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="dialogVisible = false">取消</el-button>
-          <el-button type="primary" @click="dialogVisible = false">
+          <el-button type="primary" @click="handleConfirmClick">
             确定
           </el-button>
         </span>
@@ -22,6 +22,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, watch } from 'vue'
+import { useStore } from '@/store'
 
 import QmForm from '@/base-ui/form'
 
@@ -34,6 +35,10 @@ export default defineComponent({
     defaultInfo: {
       type: Object,
       default: () => ({})
+    },
+    pageName: {
+      type: String,
+      required: true
     }
   },
   components: {
@@ -41,6 +46,7 @@ export default defineComponent({
   },
   setup(props) {
     const dialogVisible = ref(false)
+
     const formData = ref<any>({})
 
     watch(
@@ -52,9 +58,27 @@ export default defineComponent({
       }
     )
 
+    const store = useStore()
+    const handleConfirmClick = () => {
+      dialogVisible.value = false
+      if (Object.keys(props.defaultInfo).length) {
+        store.dispatch('system/editPageDataAction', {
+          pageName: props.pageName,
+          editData: { ...formData.value },
+          id: props.defaultInfo.id
+        })
+      } else {
+        store.dispatch('system/createPageDataAction', {
+          pageName: props.pageName,
+          newData: { ...formData.value }
+        })
+      }
+    }
+
     return {
       dialogVisible,
-      formData
+      formData,
+      handleConfirmClick
     }
   }
 })

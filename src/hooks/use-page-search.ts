@@ -9,7 +9,6 @@ export function usePageSearch() {
   }
 
   const handleQueryClick = (queryInfo: any) => {
-    console.log(pageContentRef)
     pageContentRef.value?.getPageData(queryInfo)
   }
 
