@@ -10,14 +10,29 @@
     <page-modal
       ref="pageModalRef"
       pageName="role"
+      :otherInfo="otherInfo"
       :defaultInfo="defaultValue"
       :modalConfig="modalConfig"
-    />
+    >
+      <div class="menu-tree">
+        <el-tree
+          ref="elTreeRef"
+          :data="menus"
+          show-checkbox
+          node-key="id"
+          :props="{ children: 'children', label: 'name' }"
+          @check="handleCheckChange"
+        />
+      </div>
+    </page-modal>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { computed, defineComponent, nextTick, ref } from 'vue'
+import { useStore } from '@/store'
+import { menuMapLeafKeys } from '@/utils/map-menus'
+import { ElTree } from 'element-plus'
 
 import PageSearch from '@/components/page-search'
 import PageContent from '@/components/page-content'
@@ -32,8 +47,28 @@ export default defineComponent({
   name: 'role',
   components: { PageContent, PageSearch, PageModal },
   setup() {
+    const elTreeRef = ref<InstanceType<typeof ElTree>>()
+    const editCallback = (item: any) => {
+      const leafKeys = menuMapLeafKeys(item.menuList)
+      nextTick(() => {
+        elTreeRef.value?.setCheckedKeys(leafKeys)
+      })
+    }
+
     const [pageModalRef, defaultValue, handleNewData, handleEditData] =
-      usePageModal()
+      usePageModal(undefined, editCallback)
+
+    const store = useStore()
+    const menus = computed(() => store.state.entireMenu)
+
+    const otherInfo = ref({})
+
+    const handleCheckChange = (data1: any, data2: any) => {
+      const checkedKeys = data2.checkedKeys
+      const halfCheckedKeys = data2.halfCheckedKeys
+      const menuList = [...checkedKeys, ...halfCheckedKeys]
+      otherInfo.value = { menuList }
+    }
 
     return {
       contentTableConfig,
@@ -42,10 +77,19 @@ export default defineComponent({
       pageModalRef,
       defaultValue,
       handleNewData,
-      handleEditData
+      handleEditData,
+      menus,
+      otherInfo,
+      elTreeRef,
+      handleCheckChange,
+      editCallback
     }
   }
 })
 </script>
 
-<style scoped></style>
+<style scoped lang="less">
+.menu-tree {
+  margin-left: 20px;
+}
+</style>

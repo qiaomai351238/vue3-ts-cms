@@ -34,7 +34,8 @@ import {
   ElSubMenu,
   ElIcon,
   ElImage,
-  ElDialog
+  ElDialog,
+  ElTree
 } from 'element-plus'
 
 const components = [
@@ -71,7 +72,8 @@ const components = [
   ElIcon,
   ElPagination,
   ElImage,
-  ElDialog
+  ElDialog,
+  ElTree
 ]
 
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
